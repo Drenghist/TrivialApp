@@ -13,6 +13,10 @@ import coil.network.HttpException
 import com.example.trivialapp.TrivialApplication
 import com.example.trivialapp.data.PreguntasRepositorio
 import com.example.trivialapp.model.Pregunta
+import com.example.trivialapp.model.PreguntaPreparada
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -20,30 +24,44 @@ sealed interface GameUiState {
     data object Loading : GameUiState
     data object Error: GameUiState
     data class Success(val preguntas: List<Pregunta>) : GameUiState
-
+    data object Home : GameUiState
 }
+
+data class GameViewState(
+    val uiState: GameUiState = GameUiState.Loading,
+    val questions: List<PreguntaPreparada> = emptyList(),
+    val currentQuestionIndex: Int = 0,
+    val correctAnswers: Int = 0,
+    val numberOfQuestions: Int = 5,
+    val questionReplied: Boolean = false,
+    val currentQuestion: PreguntaPreparada? = null,
+    val currentPercentage: Int = 0,
+    val actualRecord: Int = 0,
+    val gameFinished: Boolean = false,
+    val newRecord: Boolean = false,
+)
 
 
 
 class PreguntasViewModel(private val preguntasRepositorio: PreguntasRepositorio): ViewModel() {
-    var gameUiState : GameUiState by mutableStateOf(GameUiState.Loading)
-        private set
+    private val _gameViewState = MutableStateFlow(GameViewState())
+    val gameViewState : StateFlow<GameViewState> = _gameViewState.asStateFlow()
+    //variable temproal
+    var preguntaTemp: List<Pregunta> = listOf()
 
     init {
-        getPreguntas()
+        _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Home)
     }
 
-    fun getPreguntas() {
+    fun getPreguntas(): List<Pregunta> {
         viewModelScope.launch {
-            gameUiState = GameUiState.Loading
-            gameUiState = try {
-                GameUiState.Success(preguntasRepositorio.getPreguntas())
-            } catch (e: IOException) {
-                GameUiState.Error
-            } catch (e: HttpException) {
-                GameUiState.Error
-            }
+            _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Loading)
+            val preguntas = preguntasRepositorio.getPreguntas()
+            preguntaTemp = preguntas
+
+
         }
+        return preguntaTemp
     }
 
     companion object {
@@ -55,4 +73,6 @@ class PreguntasViewModel(private val preguntasRepositorio: PreguntasRepositorio)
             }
         }
     }
+
+
 }

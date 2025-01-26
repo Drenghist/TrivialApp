@@ -8,9 +8,18 @@ interface PreguntasRepositorio {
     suspend fun getPreguntas(): List<Pregunta>
 }
 
-class NetworkPreguntasRepositorio(private val preguntasApiService : PreguntasApiService): PreguntasRepositorio {
+class NetworkPreguntasRepositorio(
+    private val preguntasApiService : PreguntasApiService
+): PreguntasRepositorio {
     override suspend fun getPreguntas(): List<Pregunta> {
-        return preguntasApiService.getApiPreguntas().body()?.results ?:emptyList()
+        val response = preguntasApiService.getApiPreguntas()
+
+        return if (response.isSuccessful) {
+            response.body()?.results ?: emptyList()
+        } else {
+            emptyList()
+        }
+
     }
 }
 

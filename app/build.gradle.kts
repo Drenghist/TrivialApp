@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.trivialapp"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.trivialapp"
@@ -46,6 +46,13 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    //esta en teoría no se usa
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+
+    //Gson
+    //implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     //viewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
