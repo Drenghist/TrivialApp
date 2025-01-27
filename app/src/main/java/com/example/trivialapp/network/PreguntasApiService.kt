@@ -19,8 +19,8 @@ interface PreguntasApiService{
         @Query("amount") amount: Int = 10,
         @Query("type") type: String = "multiple"
     ): Response<PreguntasApiResponse>
-}
-*/
+}*/
+
 
 @Serializable
 data class PreguntasApiResponse(

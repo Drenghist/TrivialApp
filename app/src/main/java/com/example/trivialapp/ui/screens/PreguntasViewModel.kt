@@ -3,6 +3,7 @@ package com.example.trivialapp.ui.screens
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -46,7 +47,7 @@ data class GameViewState(
 class PreguntasViewModel(private val preguntasRepositorio: PreguntasRepositorio): ViewModel() {
     private val _gameViewState = MutableStateFlow(GameViewState())
     val gameViewState : StateFlow<GameViewState> = _gameViewState.asStateFlow()
-    //variable temproal
+    //variable temporal
     var preguntaTemp: List<Pregunta> = listOf()
 
     init {
@@ -56,10 +57,7 @@ class PreguntasViewModel(private val preguntasRepositorio: PreguntasRepositorio)
     fun getPreguntas(): List<Pregunta> {
         viewModelScope.launch {
             _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Loading)
-            val preguntas = preguntasRepositorio.getPreguntas()
-            preguntaTemp = preguntas
-
-
+            preguntaTemp = preguntasRepositorio.getPreguntas()
         }
         return preguntaTemp
     }
