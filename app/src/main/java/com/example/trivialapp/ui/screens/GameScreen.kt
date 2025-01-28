@@ -27,7 +27,8 @@ fun GameScreen(
         .padding(12.dp)
         .padding(top = 40.dp)) {
         Text(
-            preguntasViewModel.getPreguntas().toString(),
+
+            preguntasViewModel.gameViewState.toString(),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.size(20.dp).fillMaxWidth())
