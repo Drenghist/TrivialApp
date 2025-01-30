@@ -24,15 +24,14 @@ import java.io.IOException
 
 sealed interface GameUiState {
     data object Loading : GameUiState
-    data object Error: GameUiState
-    data class Success(val preguntas: List<Pregunta>) : GameUiState
+    data class Error(val message: String) : GameUiState
+    data object Success : GameUiState
     data object Home : GameUiState
 }
 
 data class GameViewState(
     val uiState: GameUiState = GameUiState.Loading,
-    //val questions: List<PreguntaPreparada> = emptyList(), --- Lo anulo para pruebas
-    val questions: List<Pregunta> = emptyList(),
+    val questions: List<PreguntaPreparada> = emptyList(),
     val currentQuestionIndex: Int = 0,
     val correctAnswers: Int = 0,
     val numberOfQuestions: Int = 5,
@@ -49,31 +48,29 @@ data class GameViewState(
 class PreguntasViewModel(private val preguntasRepositorio: PreguntasRepositorio): ViewModel() {
     private val _gameViewState = MutableStateFlow(GameViewState())
     val gameViewState : StateFlow<GameViewState> = _gameViewState.asStateFlow()
-    //variable temporal
-
 
     init {
         _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Home)
-        getPreguntas()
     }
 
-    /* Función getPreguntas sencilla. No funciona
-
-    var preguntaTemp: List<Pregunta> = listOf()
-    fun getPreguntas(): List<Pregunta> {
-        viewModelScope.launch {
-            _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Loading)
-            preguntaTemp = preguntasRepositorio.getPreguntas()
-        }
-        return preguntaTemp
-    }*/
 
     fun getPreguntas() {
         viewModelScope.launch {
-            //_gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Loading)
-            Log.d("antes del launch",preguntasRepositorio.getPreguntas().toString())
-            _gameViewState.value = _gameViewState.value.copy(questions = preguntasRepositorio.getPreguntas())
-            Log.d("despues del launch",preguntasRepositorio.getPreguntas().toString())
+            _gameViewState.value = _gameViewState.value.copy(uiState = GameUiState.Loading)
+            val questions = preguntasRepositorio.getPreguntas().map { it.aPregunta() }
+            _gameViewState.value = _gameViewState.value.copy(
+                uiState = GameUiState.Success,
+                numberOfQuestions = 10,
+                questions = questions,
+                currentQuestionIndex = 0,
+                correctAnswers = 0,
+                questionReplied = false,
+                currentPercentage = 0,
+                gameFinished = false,
+                newRecord = false,
+                currentQuestion = questions.firstOrNull()
+
+            )
         }
 
     }

@@ -16,7 +16,7 @@ data class Pregunta(
     fun aPregunta(): PreguntaPreparada {
         val options = respuestasIncorrectas.toMutableList()
         options.add(respuestaCorrecta)
-        return PreguntaPreparada(pregunta = pregunta, opciones = options.shuffled(), respuestaCorrecta = respuestaCorrecta)
+        return PreguntaPreparada(rawPregunta = pregunta, rawOpciones = options.shuffled(), rawRespuestaCorrecta = respuestaCorrecta)
     }
 }
 
