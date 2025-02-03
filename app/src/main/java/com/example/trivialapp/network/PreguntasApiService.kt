@@ -7,7 +7,7 @@ import retrofit2.http.GET
 
 
 interface PreguntasApiService {
-    @GET("api.php?amount=10")
+    @GET("api.php?amount=3&type=multiple")
     suspend fun getApiPreguntas(): Response<PreguntasApiResponse>
 }
 
