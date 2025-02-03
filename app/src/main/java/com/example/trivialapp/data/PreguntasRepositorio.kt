@@ -1,7 +1,6 @@
 package com.example.trivialapp.data
 
 import com.example.trivialapp.model.Pregunta
-import com.example.trivialapp.network.PreguntasApiResponse
 import com.example.trivialapp.network.PreguntasApiService
 
 interface PreguntasRepositorio {
